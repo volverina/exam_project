@@ -7,21 +7,61 @@
   </head>
   <body>
     <a-scene cursor="rayOrigin: mouse" raycaster="objects: .clickable">
+      <!-- 1) Підвантажуємо шрифт Roboto MSDF із підтримкою кирилиці -->
+      <a-assets>
+        <a-asset-item id="roboto-multilang"
+                      src="https://cdn.jsdelivr.net/gh/etiennepinchon/aframe-fonts/fonts/roboto/Roboto-msdf.json">
+        </a-asset-item>
+        <img id="roboto-multilang-texture"
+             src="https://cdn.jsdelivr.net/gh/etiennepinchon/aframe-fonts/fonts/roboto/Roboto-msdf.png"
+             alt="Roboto MSDF">
+      </a-assets>
+
       <a-sky color="#ECECEC"></a-sky>
 
       <!-- Polyhedra -->
-      <a-entity id="tetrahedron" class="clickable" geometry="primitive: tetrahedron" position="-2 1 -5" material="color: red" rotation="0 0 0"></a-entity>
-      <a-box id="cube" class="clickable" position="0 1 -5" color="blue"></a-box>
-      <a-entity id="octahedron" class="clickable" geometry="primitive: octahedron" position="2 1 -5" material="color: green"></a-entity>
-      <a-entity id="icosahedron" class="clickable" geometry="primitive: icosahedron" position="-2 -1 -5" material="color: orange"></a-entity>
-      <a-entity id="dodecahedron" class="clickable" geometry="primitive: dodecahedron" position="2 -1 -5" material="color: purple"></a-entity>
+      <a-entity id="tetrahedron" class="clickable"
+                geometry="primitive: tetrahedron"
+                position="-2 1 -5" material="color: red" rotation="0 0 0">
+      </a-entity>
+      <a-box id="cube" class="clickable"
+             position="0 1 -5" color="blue">
+      </a-box>
+      <a-entity id="octahedron" class="clickable"
+                geometry="primitive: octahedron"
+                position="2 1 -5" material="color: green">
+      </a-entity>
+      <a-entity id="icosahedron" class="clickable"
+                geometry="primitive: icosahedron"
+                position="-2 -1 -5" material="color: orange">
+      </a-entity>
+      <a-entity id="dodecahedron" class="clickable"
+                geometry="primitive: dodecahedron"
+                position="2 -1 -5" material="color: purple">
+      </a-entity>
 
       <!-- Info Panels -->
-      <a-plane position="0 2 -4" width="6" height="1" color="#FFF">
-        <a-text value="Об'єкти: Тетраедр, Куб, Октаедр, Ікосаедр, Додекаедр" color="#000" width="5" position="-2.8 0 0.01"></a-text>
+      <a-plane position="0 3 -4" width="6" height="1" color="#FFF">
+        <a-text
+          value="Об'єкти: Тетраедр, Куб, Октаедр, Ікосаедр, Додекаедр"
+          color="#000"
+          width="5"
+          position="-2.8 0 0.01"
+          font="#roboto-multilang"
+          material="src: #roboto-multilang-texture">
+        </a-text>
       </a-plane>
-      <a-plane position="0 -2 -4" width="6" height="2" color="#FFF">
-        <a-text id="infoText" value="Виберіть об'єкт для перегляду формул." color="#000" width="5" position="-2.8 0.5 0.01"></a-text>
+
+      <a-plane position="0 -3 -4" width="6" height="2" color="#FFF">
+        <a-text
+          id="infoText"
+          value="Виберіть об'єкт для перегляду формул."
+          color="#000"
+          width="5"
+          position="-2.8 0.5 0.01"
+          font="#roboto-multilang"
+          material="src: #roboto-multilang-texture">
+        </a-text>
       </a-plane>
     </a-scene>
 
@@ -38,12 +78,13 @@
         entity.addEventListener('click', () => {
           const id = entity.getAttribute('id');
           const text = formulas[id] || 'Формули не знайдено';
-          document.getElementById('infoText').setAttribute('value', `${id.toUpperCase()}:\n${text}`);
+          // Просто міняємо value у вже існуючого <a-text id="infoText">
+          document.getElementById('infoText')
+                  .setAttribute('value', `${id.toUpperCase()}:\n${text}`);
         });
       });
 
       let rotating = false;
-
 
       function rotateAll() {
         const polyhedra = ['tetrahedron', 'cube', 'octahedron', 'icosahedron', 'dodecahedron'];
@@ -63,4 +104,3 @@
     </script>
   </body>
 </html>
-
