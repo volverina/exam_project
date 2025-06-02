@@ -4,15 +4,10 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/hand-pose-detection"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-core"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-converter"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-webgl"></script>
   </head>
   <body>
     <a-scene cursor="rayOrigin: mouse" raycaster="objects: .clickable">
-      <!--<a-sky color="#ECECEC"></a-sky>-->
+      <a-sky color="#ECECEC"></a-sky>
 
       <!-- Polyhedra -->
       <a-entity id="tetrahedron" class="clickable" geometry="primitive: tetrahedron" position="-2 1 -5" material="color: red" rotation="0 0 0"></a-entity>
@@ -49,38 +44,6 @@
 
       let rotating = false;
 
-      async function setupGestureRecognition() {
-        const video = document.createElement('video');
-        video.style.display = 'none';
-        document.body.appendChild(video);
-
-        const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-        video.srcObject = stream;
-        await video.play();
-
-        const model = await handPoseDetection.createDetector(
-          handPoseDetection.SupportedModels.MediaPipeHands,
-          {
-            runtime: 'mediapipe',
-            modelType: 'lite',
-            solutionPath: 'https://cdn.jsdelivr.net/npm/@mediapipe/hands'
-          }
-        );
-
-        async function detect() {
-          const hands = await model.estimateHands(video);
-          if (hands.length === 1) {
-            if (!rotating) {
-              rotating = true;
-              rotateAll();
-            }
-          } else {
-            rotating = false;
-          }
-        }
-
-        setInterval(detect, 300);
-      }
 
       function rotateAll() {
         const polyhedra = ['tetrahedron', 'cube', 'octahedron', 'icosahedron', 'dodecahedron'];
