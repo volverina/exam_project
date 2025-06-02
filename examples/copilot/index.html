@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Механічні коливання і хвилі</title>
+    <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+  </head>
+  <body>
+    <a-scene>
+      <!-- Освітній елемент: модель маятника -->
+      <a-entity position="0 1.5 -3">
+        <a-box color="#4CC3D9" depth="0.1" height="2" width="0.1"></a-box>
+        <a-sphere position="0 -1 0" radius="0.1" color="#EF2D5E"></a-sphere>
+        <a-animation attribute="rotation" to="0 0 30" direction="alternate" dur="1000" repeat="indefinite"></a-animation>
+      </a-entity>
+
+      <!-- Освітній елемент: хвильова модель -->
+      <a-plane position="0 0 -4" rotation="-90 0 0" width="4" height="4" color="#7BC8A4">
+        <a-animation attribute="scale" to="1 1.5 1" direction="alternate" dur="1000" repeat="indefinite"></a-animation>
+      </a-plane>
+    </a-scene>
+  </body>
+</html>
+

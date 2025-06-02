@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Механічні коливання і хвилі - Інтерактивний урок</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/aframe/1.4.2/aframe.min.js"></script>
+    <style>
+        .controls {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255, 255, 255, 0.9);
+            padding: 15px;
+            border-radius: 10px;
+            z-index: 1000;
+            text-align: center;
+        }
+        .info-panel {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 15px;
+            border-radius: 10px;
+            z-index: 1000;
+            max-width: 300px;
+        }
+        button {
+            margin: 5px;
+            padding: 8px 15px;
+            border: none;
+            border-radius: 5px;
+            background: #4CAF50;
+            color: white;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #45a049;
+        }
+        .slider {
+            width: 200px;
+            margin: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="info-panel">
+        <h3>Інформація про коливання</h3>
+        <p>Амплітуда: <span id="amplitude-value">1</span> м</p>
+        <p>Частота: <span id="frequency-value">1</span> Гц</p>
+        <p>Період: <span id="period-value">1</span> с</p>
+    </div>
+    
+    <div class="controls">
+        <div>
+            <label>Амплітуда:</label>
+            <input type="range" min="0.1" max="2" step="0.1" value="1" class="slider" id="amplitude-slider">
+        </div>
+        <div>
+            <label>Частота:</label>
+            <input type="range" min="0.1" max="2" step="0.1" value="1" class="slider" id="frequency-slider">
+        </div>
+        <button id="start-btn">Старт</button>
+        <button id="stop-btn">Стоп</button>
+        <button id="reset-btn">Скинути</button>
+    </div>
+
+    <a-scene>
+        <a-entity position="0 1.6 0">
+            <a-camera></a-camera>
+        </a-entity>
+
+        <!-- Маятник -->
+        <a-entity id="pendulum" position="0 2 -3">
+            <a-cylinder color="#666" height="0.1" radius="0.02" position="0 0 0"></a-cylinder>
+            <a-sphere id="bob" color="red" radius="0.2" position="0 -2 0"></a-sphere>
+            <a-cylinder id="string" color="#333" height="2" radius="0.01" position="0 -1 0" rotation="0 0 0"></a-cylinder>
+        </a-entity>
+
+        <!-- Координатна сітка -->
+        <a-entity position="0 0 -3">
+            <a-plane color="#CCC" height="4" width="6" rotation="-90 0 0" position="0 0 0"></a-plane>
+            <!-- Вертикальні лінії сітки -->
+            <a-entity id="grid-lines"></a-entity>
+        </a-entity>
+
+        <!-- Освітлення -->
+        <a-light type="ambient" color="#FFF" intensity="0.5"></a-light>
+        <a-light type="directional" color="#FFF" intensity="1" position="-1 1 1"></a-light>
+    </a-scene>
+
+    <script>
+        let isAnimating = false;
+        let time = 0;
+        let amplitude = 1;
+        let frequency = 1;
+        
+        const pendulum = document.getElementById('pendulum');
+        const bob = document.getElementById('bob');
+        const amplitudeSlider = document.getElementById('amplitude-slider');
+        const frequencySlider = document.getElementById('frequency-slider');
+        const startBtn = document.getElementById('start-btn');
+        const stopBtn = document.getElementById('stop-btn');
+        const resetBtn = document.getElementById('reset-btn');
+        
+        function updateInfo() {
+            document.getElementById('amplitude-value').textContent = amplitude.toFixed(1);
+            document.getElementById('frequency-value').textContent = frequency.toFixed(1);
+            document.getElementById('period-value').textContent = (1/frequency).toFixed(1);
+        }
+
+        function animate() {
+            if (!isAnimating) return;
+            
+            time += 0.016;
+            const angle = amplitude * Math.sin(2 * Math.PI * frequency * time);
+            pendulum.setAttribute('rotation', `0 0 ${angle * 30}`);
+            
+            requestAnimationFrame(animate);
+        }
+
+        amplitudeSlider.addEventListener('input', (e) => {
+            amplitude = parseFloat(e.target.value);
+            updateInfo();
+        });
+
+        frequencySlider.addEventListener('input', (e) => {
+            frequency = parseFloat(e.target.value);
+            updateInfo();
+        });
+
+        startBtn.addEventListener('click', () => {
+            isAnimating = true;
+            animate();
+        });
+
+        stopBtn.addEventListener('click', () => {
+            isAnimating = false;
+        });
+
+        resetBtn.addEventListener('click', () => {
+            isAnimating = false;
+            time = 0;
+            pendulum.setAttribute('rotation', '0 0 0');
+            amplitudeSlider.value = 1;
+            frequencySlider.value = 1;
+            amplitude = 1;
+            frequency = 1;
+            updateInfo();
+        });
+
+        // Створення ліній сітки
+        const gridLines = document.getElementById('grid-lines');
+        for (let i = -3; i <= 3; i++) {
+            const line = document.createElement('a-entity');
+            line.setAttribute('geometry', {
+                primitive: 'box',
+                height: 4,
+                width: 0.01,
+                depth: 0.01
+            });
+            line.setAttribute('material', 'color: #888');
+            line.setAttribute('position', `${i} 2 0`);
+            gridLines.appendChild(line);
+        }
+
+        updateInfo();
+    </script>
+</body>
+</html>

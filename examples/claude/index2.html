@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Механічні коливання і хвилі - Інтерактивний урок</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/aframe/1.4.2/aframe.min.js"></script>
+    <style>
+        .controls {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255, 255, 255, 0.9);
+            padding: 15px;
+            border-radius: 10px;
+            z-index: 1000;
+            text-align: center;
+            width: 80%;
+            max-width: 600px;
+        }
+        .info-panel {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 15px;
+            border-radius: 10px;
+            z-index: 1000;
+            max-width: 300px;
+        }
+        .control-group {
+            margin: 10px 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        button {
+            margin: 5px;
+            padding: 8px 15px;
+            border: none;
+            border-radius: 5px;
+            background: #4CAF50;
+            color: white;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #45a049;
+        }
+        .slider {
+            width: 200px;
+            margin: 10px;
+        }
+        label {
+            min-width: 120px;
+            text-align: right;
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="info-panel">
+        <h3>Інформація про коливання</h3>
+        <p>Амплітуда маятника: <span id="amplitude-value">1</span> м</p>
+        <p>Частота маятника: <span id="frequency-value">1</span> Гц</p>
+        <p>Період: <span id="period-value">1</span> с</p>
+        <p>Швидкість хвиль: <span id="wave-speed-value">1</span> м/с</p>
+    </div>
+    
+    <div class="controls">
+        <div class="control-group">
+            <label>Амплітуда маятника:</label>
+            <input type="range" min="0.1" max="2" step="0.1" value="1" class="slider" id="amplitude-slider">
+        </div>
+        <div class="control-group">
+            <label>Частота маятника:</label>
+            <input type="range" min="0.1" max="2" step="0.1" value="1" class="slider" id="frequency-slider">
+        </div>
+        <div class="control-group">
+            <label>Частота хвиль:</label>
+            <input type="range" min="0.1" max="2" step="0.1" value="0.5" class="slider" id="wave-frequency-slider">
+        </div>
+        <div class="control-group">
+            <label>Швидкість хвиль:</label>
+            <input type="range" min="0.1" max="3" step="0.1" value="1" class="slider" id="wave-speed-slider">
+        </div>
+        <button id="start-btn">Старт</button>
+        <button id="stop-btn">Стоп</button>
+        <button id="reset-btn">Скинути</button>
+    </div>
+
+    <a-scene>
+        <a-entity position="0 1.6 0">
+            <a-camera></a-camera>
+        </a-entity>
+
+        <!-- Маятник -->
+        <a-entity id="pendulum" position="0 4 -3">
+            <a-cylinder color="#666" height="0.1" radius="0.02" position="0 0 0"></a-cylinder>
+            <a-sphere id="bob" color="red" radius="0.2" position="0 -2 0"></a-sphere>
+            <a-cylinder id="string" color="#333" height="2" radius="0.01" position="0 -1 0" rotation="0 0 0"></a-cylinder>
+        </a-entity>
+
+        <!-- Хвильова поверхня -->
+        <a-entity id="wave-surface" position="0 0 -4">
+            <a-plane id="wave" rotation="-90 0 0" width="8" height="8" color="#2196F3" 
+                    material="shader: flat; wireframe: true;">
+            </a-plane>
+        </a-entity>
+
+        <!-- Освітлення -->
+        <a-light type="ambient" color="#FFF" intensity="0.5"></a-light>
+        <a-light type="directional" color="#FFF" intensity="1" position="-1 1 1"></a-light>
+    </a-scene>
+
+    <script>
+        let isAnimating = false;
+        let time = 0;
+        let amplitude = 1;
+        let frequency = 1;
+        let waveFrequency = 0.5;
+        let waveSpeed = 1;
+        let waveTime = 0;
+        
+        const pendulum = document.getElementById('pendulum');
+        const wave = document.getElementById('wave');
+        const amplitudeSlider = document.getElementById('amplitude-slider');
+        const frequencySlider = document.getElementById('frequency-slider');
+        const waveFrequencySlider = document.getElementById('wave-frequency-slider');
+        const waveSpeedSlider = document.getElementById('wave-speed-slider');
+        const startBtn = document.getElementById('start-btn');
+        const stopBtn = document.getElementById('stop-btn');
+        const resetBtn = document.getElementById('reset-btn');
+        
+        function updateInfo() {
+            document.getElementById('amplitude-value').textContent = amplitude.toFixed(1);
+            document.getElementById('frequency-value').textContent = frequency.toFixed(1);
+            document.getElementById('period-value').textContent = (1/frequency).toFixed(1);
+            document.getElementById('wave-speed-value').textContent = waveSpeed.toFixed(1);
+        }
+
+        function animatePendulum() {
+            if (!isAnimating) return;
+            
+            time += 0.016;
+            const angle = amplitude * Math.sin(2 * Math.PI * frequency * time);
+            pendulum.setAttribute('rotation', `0 0 ${angle * 30}`);
+            
+            requestAnimationFrame(animatePendulum);
+        }
+
+        function animateWave() {
+            if (!isAnimating) return;
+
+            waveTime += waveSpeed * 0.02;
+            const rows = 50;
+            const cols = 50;
+            let waveVertices = [];
+
+            for (let i = 0; i <= rows; i++) {
+                for (let j = 0; j <= cols; j++) {
+                    const x = (i / rows) * Math.PI * 2;
+                    const y = (j / cols) * Math.PI * 2;
+                    const z = Math.sin(waveFrequency * (x + waveTime)) * 
+                            Math.cos(waveFrequency * (y + waveTime));
+                    waveVertices.push(`${x - 1} ${z} ${y - 1}`);
+                }
+            }
+
+            wave.setAttribute('geometry', {
+                primitive: 'plane',
+                width: 8,
+                height: 8,
+                segmentsWidth: cols,
+                segmentsHeight: rows
+            });
+
+            wave.setAttribute('material', {
+                color: `hsl(${waveTime * 50 % 360}, 80%, 50%)`,
+                wireframe: true
+            });
+
+            requestAnimationFrame(animateWave);
+        }
+
+        amplitudeSlider.addEventListener('input', (e) => {
+            amplitude = parseFloat(e.target.value);
+            updateInfo();
+        });
+
+        frequencySlider.addEventListener('input', (e) => {
+            frequency = parseFloat(e.target.value);
+            updateInfo();
+        });
+
+        waveFrequencySlider.addEventListener('input', (e) => {
+            waveFrequency = parseFloat(e.target.value);
+        });
+
+        waveSpeedSlider.addEventListener('input', (e) => {
+            waveSpeed = parseFloat(e.target.value);
+            updateInfo();
+        });
+
+        startBtn.addEventListener('click', () => {
+            isAnimating = true;
+            animate();
+        });
+
+        stopBtn.addEventListener('click', () => {
+            isAnimating = false;
+        });
+
+        resetBtn.addEventListener('click', () => {
+            isAnimating = false;
+            time = 0;
+            waveTime = 0;
+            pendulum.setAttribute('rotation', '0 0 0');
+            amplitudeSlider.value = 1;
+            frequencySlider.value = 1;
+            waveFrequencySlider.value = 0.5;
+            waveSpeedSlider.value = 1;
+            amplitude = 1;
+            frequency = 1;
+            waveFrequency = 0.5;
+            waveSpeed = 1;
+            updateInfo();
+        });
+
+        function animate() {
+            animatePendulum();
+            animateWave();
+        }
+
+        updateInfo();
+    </script>
+</body>
+</html>
