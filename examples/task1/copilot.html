@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="uk">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>VR-сцена для вивчення правильних многогранників</title>
+    <!-- Підключення A-Frame -->
+    <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
+    <!-- Компонент для встановлення подій (опційно) -->
+    <script src="https://unpkg.com/aframe-event-set-component@5.0.1/dist/aframe-event-set-component.min.js"></script>
+  </head>
+  <body>
+    <a-scene id="scene">
+      <!-- Предзавантаження ресурсів -->
+      <a-assets>
+        <!-- Тут можна додати додаткові моделі, текстури чи шрифти -->
+      </a-assets>
+      
+      <!-- Фонове оточення -->
+      <a-sky color="#ECECEC"></a-sky>
+      
+      <!-- Тетраедр -->
+      <a-entity id="tetrahedron" 
+                geometry="primitive: tetrahedron; radius: 1"
+                material="color: #FF6666"
+                position="-6 1 -5"
+                rotation="0 45 0"
+                animation__rotate="property: rotation; to: 0 405 0; dur: 6000; easing: linear; loop: true"
+                event-set__mouseenter="scale: 1.2 1.2 1.2"
+                event-set__mouseleave="scale: 1 1 1">
+      </a-entity>
+      
+      <!-- Інформаційна панель для тетраедра -->
+      <a-entity id="info-tetra" visible="false" position="-6 2.5 -5">
+        <a-plane width="2.5" height="1" color="#FFF" opacity="0.8"></a-plane>
+        <a-text value="Тетраедр&#10;S = √3 · a²&#10;V = a³/(6√2)" 
+                color="#000" 
+                align="center"
+                position="0 0 0.05" 
+                width="2.3">
+        </a-text>
+      </a-entity>
+      
+      <!-- Куб -->
+      <a-box id="cube"
+             color="#66FF66"
+             depth="1" height="1" width="1"
+             position="-3 1 -5"
+             rotation="0 45 0"
+             animation__rotate="property: rotation; to: 0 405 0; dur: 6000; easing: linear; loop: true"
+             event-set__mouseenter="scale: 1.2 1.2 1.2"
+             event-set__mouseleave="scale: 1 1 1">
+      </a-box>
+      
+      <!-- Інформаційна панель для куба -->
+      <a-entity id="info-cube" visible="false" position="-3 2.5 -5">
+        <a-plane width="2.5" height="1" color="#FFF" opacity="0.8"></a-plane>
+        <a-text value="Куб&#10;S = 6 · a²&#10;V = a³"
+                color="#000"
+                align="center" 
+                position="0 0 0.05"
+                width="2.3">
+        </a-text>
+      </a-entity>
+      
+      <!-- Октаедр -->
+      <a-entity id="octahedron"
+                geometry="primitive: octahedron; radius: 1"
+                material="color: #6666FF"
+                position="0 1 -5"
+                rotation="0 45 0"
+                animation__rotate="property: rotation; to: 0 405 0; dur: 6000; easing: linear; loop: true"
+                event-set__mouseenter="scale: 1.2 1.2 1.2"
+                event-set__mouseleave="scale: 1 1 1">
+      </a-entity>
+      
+      <!-- Інформаційна панель для октаедра -->
+      <a-entity id="info-octa" visible="false" position="0 2.5 -5">
+        <a-plane width="2.5" height="1" color="#FFF" opacity="0.8"></a-plane>
+        <a-text value="Октаедр&#10;S = 2√3 · a²&#10;V = (√2)/3 · a³"
+                color="#000"
+                align="center"
+                position="0 0 0.05"
+                width="2.3">
+        </a-text>
+      </a-entity>
+      
+      <!-- Ікосаедр -->
+      <a-entity id="icosahedron"
+                geometry="primitive: icosahedron; radius: 1"
+                material="color: #FFCC66"
+                position="3 1 -5"
+                rotation="0 45 0"
+                animation__rotate="property: rotation; to: 0 405 0; dur: 6000; easing: linear; loop: true"
+                event-set__mouseenter="scale: 1.2 1.2 1.2"
+                event-set__mouseleave="scale: 1 1 1">
+      </a-entity>
+      
+      <!-- Інформаційна панель для ікосаедра -->
+      <a-entity id="info-icosa" visible="false" position="3 2.5 -5">
+        <a-plane width="2.5" height="1" color="#FFF" opacity="0.8"></a-plane>
+        <a-text value="Ікосаедр&#10;S ≈ 5√3 · a²&#10;V = (5(3+√5))/12 · a³"
+                color="#000"
+                align="center"
+                position="0 0 0.05"
+                width="2.3">
+        </a-text>
+      </a-entity>
+      
+      <!-- Додекаедр -->
+      <a-entity id="dodecahedron"
+                geometry="primitive: dodecahedron; radius: 1"
+                material="color: #66CCFF"
+                position="6 1 -5"
+                rotation="0 45 0"
+                animation__rotate="property: rotation; to: 0 405 0; dur: 6000; easing: linear; loop: true"
+                event-set__mouseenter="scale: 1.2 1.2 1.2"
+                event-set__mouseleave="scale: 1 1 1">
+      </a-entity>
+      
+      <!-- Інформаційна панель для додекаедра -->
+      <a-entity id="info-dodeca" visible="false" position="6 2.5 -5">
+        <a-plane width="2.5" height="1" color="#FFF" opacity="0.8"></a-plane>
+        <a-text value="Додекаедр&#10;S = 3√(25+10√5) · a²&#10;V = ((15+7√5)/4) · a³"
+                color="#000"
+                align="center"
+                position="0 0 0.05"
+                width="2.3">
+        </a-text>
+      </a-entity>
+      
+      <!-- Камера з курсором -->
+      <a-entity camera look-controls position="0 1.6 0">
+        <a-entity cursor="fuse: false; rayOrigin: mouse"
+                  position="0 0 -1"
+                  geometry="primitive: ring; radiusInner: 0.02; radiusOuter: 0.03"
+                  material="color: black; shader: flat">
+        </a-entity>
+      </a-entity>
+      
+    </a-scene>
+    
+    <!-- Скрипт для обробки кліків: перемикання видимості інформаційних панелей -->
+    <script>
+      const polyhedra = [
+        { objectId: 'tetrahedron', infoId: 'info-tetra' },
+        { objectId: 'cube', infoId: 'info-cube' },
+        { objectId: 'octahedron', infoId: 'info-octa' },
+        { objectId: 'icosahedron', infoId: 'info-icosa' },
+        { objectId: 'dodecahedron', infoId: 'info-dodeca' }
+      ];
+      
+      polyhedra.forEach(pair => {
+        const objEl = document.getElementById(pair.objectId);
+        const infoEl = document.getElementById(pair.infoId);
+        
+        // При кліку перемикаємо видимість інформаційної панелі (true ⇄ false)
+        objEl.addEventListener('click', () => {
+          const visible = infoEl.getAttribute('visible');
+          infoEl.setAttribute('visible', !visible);
+        });
+      });
+      
+      // Опційно: тут можна інтегрувати логіку машинного навчання (MediaPipe Hands)
+      // для керування обертанням об'єктів за допомогою жестів.
+    </script>
+  </body>
+</html>
+
